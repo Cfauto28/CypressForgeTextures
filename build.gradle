@@ -1,0 +1,116 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs 'depLib'
+        }
+    }
+    dependencies {
+		classpath files('depLib/ploceus-1.17.local.jar')
+		classpath files('depLib/signature-changer-1.0.0.jar')
+		classpath files('depLib/mapping-utils-0.19.2.jar')
+		classpath files('depLib/nester-1.4.0.jar')
+		classpath files('depLib/exceptor-1.1.0.jar')
+		classpath files('depLib/preen-1.1.0.jar')
+		classpath files('depLib/condor-1.4.6.jar')
+		classpath 'com.vdurmont:semver4j:3.1.0'
+    }
+}
+
+plugins {
+	id 'maven-publish'
+	id 'fabric-loom' version '1.17.17'
+}
+
+apply plugin: 'ploceus'
+
+base {
+	archivesName = project.archives_base_name
+}
+version = "${project.version}+mc${project.minecraft_version}"
+group = project.maven_group
+
+repositories {
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
+}
+
+loom {
+	clientOnlyMinecraftJar()
+	accessWidenerPath = file("src/main/resources/cypressforgetextures.classtweaker")
+}
+
+ploceus {
+	setIntermediaryGeneration(2)
+	disableLibraryUpgrades()
+}
+
+dependencies {
+
+	implementation 'org.apache.logging.log4j:log4j-api:2.23.1'
+	implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
+
+	modImplementation files('depLib/cypress_lib_core-0.1+mca1.0.16.05_20.jar')
+
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+/*	exceptions ploceus.raven(project.raven_build)
+	signatures ploceus.sparrow(project.sparrow_build)
+	nests ploceus.nests(project.nests_build)*/
+	mappings ("net.ornithemc:feather-gen2:a1.0.16.05_20+build.1-v2")
+}
+
+processResources {
+	inputs.property 'version', version
+
+	filesMatching('fabric.mod.json') {
+		expand 'version': version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = 'UTF-8'
+	it.options.release = 8
+}
+
+java {
+	// Still required by IDEs such as Eclipse and Visual Studio Code
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	// If this mod is going to be a library, then it should also generate Javadocs in order to aid with development.
+	// Uncomment this line to generate them.
+	withJavadocJar()
+}
+
+// If you plan to use a different file for the license, don't forget to change the file name here!
+jar {
+	from('LICENSE') {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
+}
+
+// Configure the maven publication
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
+}

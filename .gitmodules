@@ -1,0 +1,6 @@
+[submodule "CypressRepo"]
+	path = CypressRepo
+	url = https://github.com/Cfauto28/CypressRepo.git
+[submodule "depLib"]
+	path = depLib
+	url = https://github.com/Cfauto28/Cypress-depLibs

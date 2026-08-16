@@ -1,0 +1,13 @@
+classTweaker	v1	named
+transitive-accessible method net/minecraft/client/render/vertex/Tesselator <init> (I)V
+transitive-accessible field net/minecraft/client/render/vertex/Tesselator offsetX D
+transitive-accessible field net/minecraft/client/render/vertex/Tesselator offsetY D
+transitive-accessible field net/minecraft/client/render/vertex/Tesselator offsetZ D
+transitive-accessible field net/minecraft/client/render/vertex/Tesselator tesselating Z
+transitive-accessible field net/minecraft/client/render/vertex/Tesselator drawMode I
+transitive-accessible field net/minecraft/client/render/block/BlockRenderer forcedSprite I
+mutable field net/minecraft/client/render/vertex/Tesselator INSTANCE Lnet/minecraft/client/render/vertex/Tesselator;
+transitive-inject-interface net/minecraft/item/BlockItem net/fmg793/cypressforgetextures/impl/forge/IBlockItemIDProvider
+transitive-inject-interface ext/block/ExtBlock net/fmg793/cypressforgetextures/forge/ITextureProvider
+transitive-inject-interface net/minecraft/item/Item net/fmg793/cypressforgetextures/forge/ITextureProvider
+transitive-inject-interface net/minecraft/client/render/vertex/Tesselator net/fmg793/cypressforgetextures/impl/forge/ITesselatorProvider
